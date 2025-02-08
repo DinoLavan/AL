@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPS Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="dies.html">Dies</a></li>
+            <li><a href="Scheduling.html">Scheduling</a></li>
+            <li><a href="ups-tracker.html">UPS Tracker</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <h1>Track Shipments</h1>
+
+        <!-- Input to add tracking numbers -->
+        <textarea id="tracking-input" rows="5" placeholder="Enter tracking numbers (one per line)"></textarea><br><br>
+        <button id="add-button">Add Shipments</button>
+
+        <!-- Table for displaying the added tracking numbers -->
+        <table id="shipment-table">
+            <thead>
+                <tr>
+                    <th>Tracking Number</th>
+                    <th>Actions</th>
+                    <th>Status</th> <!-- New Status Column -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="ups-tracker.js"></script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Press Scheduling</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="dies.html">Dies</a></li>
+            <li><a href="Scheduling.html">Scheduling</a></li>
+            <li><a href="ups-tracker.html">UPS Tracker</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1 class="section-title">In Progress</h1>
+        <main class="press-container in-progress">
+            <!-- Press 1 -->
+            <div class="press" data-press="1">
+                <div class="press-header">
+                    <h2>Press 1</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-1-1">
+                            <td>03/20</td>
+                            <td>Acme Corp</td>
+                            <td>Business Cards - 4/4</td>
+                            <td>5,000</td>
+                            <td>E123</td>
+                            <td>30m</td>
+                            <td>$500</td>
+                            <td>J789</td>
+                            <td>SO456</td>
+                            <td>John</td>
+                            <td>NYC Office</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 2 -->
+            <div class="press" data-press="2">
+                <div class="press-header">
+                    <h2>Press 2</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-2-1">
+                            <td>03/20</td>
+                            <td>Global Foods</td>
+                            <td>Food Labels - 4/0</td>
+                            <td>10,000</td>
+                            <td>E124</td>
+                            <td>45m</td>
+                            <td>$750</td>
+                            <td>J790</td>
+                            <td>SO457</td>
+                            <td>Sarah</td>
+                            <td>CHI HQ</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 3 -->
+            <div class="press" data-press="3">
+                <div class="press-header">
+                    <h2>Press 3</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-3-1">
+                            <td>03/21</td>
+                            <td>City University</td>
+                            <td>Course Catalogs - 4/4</td>
+                            <td>3,000</td>
+                            <td>E125</td>
+                            <td>60m</td>
+                            <td>$1,200</td>
+                            <td>J791</td>
+                            <td>SO458</td>
+                            <td>Mike</td>
+                            <td>Main Campus</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 4 -->
+            <div class="press" data-press="4">
+                <div class="press-header">
+                    <h2>Press 4</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-4-1">
+                            <td>03/20</td>
+                            <td>Auto Dealers</td>
+                            <td>Service Forms - 1/1</td>
+                            <td>20,000</td>
+                            <td>E126</td>
+                            <td>25m</td>
+                            <td>$600</td>
+                            <td>J792</td>
+                            <td>SO459</td>
+                            <td>Lisa</td>
+                            <td>Service Dept</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 5 -->
+            <div class="press" data-press="5">
+                <div class="press-header">
+                    <h2>Press 5</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-5-1">
+                            <td>03/22</td>
+                            <td>Fashion Co</td>
+                            <td>Product Catalogs - 4/4</td>
+                            <td>7,500</td>
+                            <td>E127</td>
+                            <td>90m</td>
+                            <td>$2,500</td>
+                            <td>J793</td>
+                            <td>SO460</td>
+                            <td>Tom</td>
+                            <td>Design Studio</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 6 -->
+            <div class="press" data-press="6">
+                <div class="press-header">
+                    <h2>Press 6</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-6-1">
+                            <td>03/21</td>
+                            <td>Medical Center</td>
+                            <td>Patient Forms - 1/1</td>
+                            <td>50,000</td>
+                            <td>E128</td>
+                            <td>40m</td>
+                            <td>$900</td>
+                            <td>J794</td>
+                            <td>SO461</td>
+                            <td>Amy</td>
+                            <td>Records Dept</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 7 -->
+            <div class="press" data-press="7">
+                <div class="press-header">
+                    <h2>Press 7</h2>
+                </div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="job draggable" draggable="true" id="job-7-1">
+                            <td>03/20</td>
+                            <td>Retail Chain</td>
+                            <td>Monthly Mailer - 4/4</td>
+                            <td>100,000</td>
+                            <td>E129</td>
+                            <td>120m</td>
+                            <td>$5,000</td>
+                            <td>J795</td>
+                            <td>SO462</td>
+                            <td>Dave</td>
+                            <td>Marketing HQ</td>
+                        </tr>
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs assigned</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <h1 class="section-title">Completed</h1>
+        <main class="press-container completed">
+            <!-- Press 1 -->
+            <div class="press" data-press="1">
+                <div class="press-header">Press 1</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 2 -->
+            <div class="press" data-press="2">
+                <div class="press-header">Press 2</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 3 -->
+            <div class="press" data-press="3">
+                <div class="press-header">Press 3</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 4 -->
+            <div class="press" data-press="4">
+                <div class="press-header">Press 4</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 5 -->
+            <div class="press" data-press="5">
+                <div class="press-header">Press 5</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 6 -->
+            <div class="press" data-press="6">
+                <div class="press-header">Press 6</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Press 7 -->
+            <div class="press" data-press="7">
+                <div class="press-header">Press 7</div>
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>ESKO</th>
+                            <th>Set-up</th>
+                            <th>Value</th>
+                            <th>Job ID</th>
+                            <th>SO #</th>
+                            <th>Rep</th>
+                            <th>Consignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="droppable">
+                        <tr class="no-jobs">
+                            <td colspan="11">No jobs completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Context Menu - Make sure this is directly under the content div -->
+    <div id="jobContextMenu" class="context-menu">
+        <div class="context-menu-item" data-action="complete">Complete</div>
+        <div class="context-menu-item" data-action="split">Split</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="move-1">Move to Press 1</div>
+        <div class="context-menu-item" data-action="move-2">Move to Press 2</div>
+        <div class="context-menu-item" data-action="move-3">Move to Press 3</div>
+        <div class="context-menu-item" data-action="move-4">Move to Press 4</div>
+        <div class="context-menu-item" data-action="move-5">Move to Press 5</div>
+        <div class="context-menu-item" data-action="move-6">Move to Press 6</div>
+        <div class="context-menu-item" data-action="move-7">Move to Press 7</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
