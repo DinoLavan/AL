@@ -237,30 +237,134 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Handle context menu actions
-    document.querySelectorAll('.submenu .context-menu-item').forEach(item => {
-        item.addEventListener('click', async function(e) {
-            const jobId = document.getElementById('contextMenu').getAttribute('data-current-job');
-            const job = document.getElementById(jobId);
-            
-            try {
-                if (this.dataset.action === 'completed') {
-                    await updateJob(jobId.replace('job-', ''), job.closest('.press').dataset.press, 'completed');
-                    job.classList.add('completed');
-                } else if (this.dataset.action === 'split') {
-                    // Implement split logic here
-                    console.log('Split functionality to be implemented');
-                } else if (this.dataset.press) {
-                    const targetPress = document.querySelector(`.press[data-press="${this.dataset.press}"] .jobs`);
-                    await updateJob(jobId.replace('job-', ''), this.dataset.press, job.dataset.status);
-                    targetPress.appendChild(job);
-                }
-            } catch (error) {
-                console.error('Error handling job action:', error);
-            }
-            
-            document.getElementById('contextMenu').style.display = 'none';
+    // Context Menu Setup
+    const contextMenu = document.getElementById('jobContextMenu');
+
+    if (!contextMenu) {
+        console.error('Context menu element not found! Looking for element with ID: jobContextMenu');
+    }
+
+    // Add context menu to jobs
+    document.addEventListener('contextmenu', function(e) {
+        console.log('Right click detected'); // Debug log
+        
+        const jobRow = e.target.closest('tr.job');
+        if (!jobRow) {
+            console.log('No job row found at click target');
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default context menu
+        
+        const pressContainer = jobRow.closest('.press-container');
+        const press = jobRow.closest('.press');
+        
+        if (!press || !pressContainer) {
+            console.error('Could not find press container');
+            return;
+        }
+
+        // Get all jobs in this specific press
+        const tbody = press.querySelector('tbody');
+        const allJobsInPress = Array.from(tbody.querySelectorAll('tr.job'));
+        const currentIndex = allJobsInPress.indexOf(jobRow);
+
+        console.log('Right-clicked job:', {
+            pressContainer: pressContainer.className,
+            press: press.dataset.press,
+            jobId: jobRow.id,
+            index: currentIndex
         });
+        
+        // Store job information
+        contextMenu.dataset.currentJob = jobRow.id;
+        contextMenu.dataset.currentPress = press.dataset.press;
+        contextMenu.dataset.currentIndex = currentIndex;
+        contextMenu.dataset.isCompleted = pressContainer.classList.contains('completed');
+        
+        // Position and show menu
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+    });
+
+    // Close context menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!contextMenu.contains(e.target)) {
+            contextMenu.style.display = 'none';
+        }
+    });
+
+    // Handle context menu actions
+    contextMenu.addEventListener('click', function(e) {
+        const item = e.target.closest('.context-menu-item');
+        if (!item) return;
+
+        const action = item.dataset.action;
+        const currentJobId = contextMenu.dataset.currentJob;
+        const currentPress = contextMenu.dataset.currentPress;
+        const currentIndex = parseInt(contextMenu.dataset.currentIndex);
+        const isCompleted = contextMenu.dataset.isCompleted === 'true';
+        
+        // Get the exact job row
+        const section = isCompleted ? '.completed' : '.in-progress';
+        const press = document.querySelector(`.press-container${section} .press[data-press="${currentPress}"]`);
+        const tbody = press.querySelector('tbody');
+        const jobRows = Array.from(tbody.querySelectorAll('tr.job'));
+        const jobRow = jobRows[currentIndex];
+        
+        if (!jobRow) {
+            console.error('Could not find job row');
+            contextMenu.style.display = 'none';
+            return;
+        }
+
+        if (action === 'delete') {
+            if (confirm('Are you sure you want to archive this job?')) {
+                try {
+                    // Get all the job data before removing
+                    const cells = jobRow.getElementsByTagName('td');
+                    const jobData = {
+                        id: jobRow.id,
+                        pressNumber: currentPress,
+                        timestamp: new Date().toISOString(),
+                        data: Array.from(cells).map(cell => cell.textContent),
+                        section: isCompleted ? 'completed' : 'in-progress'
+                    };
+
+                    // Archive the job
+                    const archivedJobs = JSON.parse(localStorage.getItem('archivedJobs') || '[]');
+                    archivedJobs.push(jobData);
+                    localStorage.setItem('archivedJobs', JSON.stringify(archivedJobs));
+
+                    // Remove the job row
+                    jobRow.remove();
+
+                    // Add "no jobs" row if needed
+                    if (!tbody.querySelector('tr.job')) {
+                        const noJobsRow = document.createElement('tr');
+                        noJobsRow.className = 'no-jobs';
+                        const td = document.createElement('td');
+                        td.colSpan = '11';
+                        td.textContent = 'No jobs assigned';
+                        noJobsRow.appendChild(td);
+                        tbody.appendChild(noJobsRow);
+                    }
+
+                    // Save state
+                    if (typeof saveCurrentState === 'function') {
+                        saveCurrentState();
+                    }
+
+                    alert('Job has been moved to archive');
+                } catch (error) {
+                    console.error('Error during delete:', error);
+                    alert('Error archiving job: ' + error.message);
+                }
+            }
+        }
+
+        contextMenu.style.display = 'none';
     });
 
     // Add new job function
@@ -375,26 +479,6 @@ document.addEventListener('DOMContentLoaded', function () {
         originalDrop(ev);
     };
 
-    // Context Menu
-    const contextMenu = document.getElementById('jobContextMenu');
-    let activeJob = null;
-
-    // Attach right-click event to job rows
-    document.querySelectorAll('.job').forEach(job => {
-        job.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            console.log('Right click detected'); // Debug line
-            contextMenu.style.display = 'block';
-            contextMenu.style.left = e.pageX + 'px';
-            contextMenu.style.top = e.pageY + 'px';
-        });
-    });
-
-    // Close menu on any click
-    document.addEventListener('click', () => {
-        contextMenu.style.display = 'none';
-    });
-
     // Existing drag and drop code...
 });
 
@@ -457,25 +541,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add context menu to both sections
     document.addEventListener('contextmenu', function(e) {
+        // Try to find job row in both sections
         const jobRow = e.target.closest('tr.job');
         if (!jobRow) return;
         
         e.preventDefault();
+        e.stopPropagation();
         
         // Store both the job ID and the exact row reference
         const pressContainer = jobRow.closest('.press-container');
         const press = jobRow.closest('.press');
         
+        if (!press || !pressContainer) {
+            console.error('Could not find press container');
+            return;
+        }
+
+        // Get all jobs in this specific press
+        const tbody = press.querySelector('tbody');
+        const allJobsInPress = Array.from(tbody.querySelectorAll('tr.job'));
+        const currentIndex = allJobsInPress.indexOf(jobRow);
+
+        console.log('Right-clicked job:', {
+            pressContainer: pressContainer.className,
+            press: press.dataset.press,
+            jobId: jobRow.id,
+            index: currentIndex
+        });
+        
         menu.dataset.currentJob = jobRow.id;
         menu.dataset.currentPress = press.dataset.press;
-        menu.dataset.currentIndex = Array.from(press.querySelectorAll('tr.job')).indexOf(jobRow);
+        menu.dataset.currentIndex = currentIndex;
+        menu.dataset.isCompleted = pressContainer.classList.contains('completed');
         
         // Position menu
-        const x = e.clientX;
-        const y = e.clientY;
         menu.style.display = 'block';
-        menu.style.left = x + 'px';
-        menu.style.top = y + 'px';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
     });
 
     // Handle menu item clicks
@@ -487,14 +589,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentJobId = menu.dataset.currentJob;
         const currentPress = menu.dataset.currentPress;
         const currentIndex = parseInt(menu.dataset.currentIndex);
+        const isCompleted = menu.dataset.isCompleted === 'true';
         
-        // Get the exact job row using both press number and index
-        const press = document.querySelector(`.press[data-press="${currentPress}"]`);
-        const jobRows = Array.from(press.querySelectorAll('tr.job'));
+        // Get the exact job row using press number, section, and index
+        const section = isCompleted ? '.completed' : '.in-progress';
+        const press = document.querySelector(`.press-container${section} .press[data-press="${currentPress}"]`);
+        const tbody = press.querySelector('tbody');
+        const jobRows = Array.from(tbody.querySelectorAll('tr.job'));
         const jobRow = jobRows[currentIndex];
         
         if (!jobRow) {
             console.error('Could not find job row');
+            menu.style.display = 'none';
             return;
         }
 
@@ -565,36 +671,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetPress.appendChild(completedJob);
                 initDragAndDrop();
             }
-        } else if (action === 'delete') {
-            // Get job data before removing
-            const pressContainer = jobRow.closest('.press-container');
-            const press = jobRow.closest('.press');
-            const jobCells = Array.from(jobRow.cells).map(cell => cell.textContent);
-            
-            // Create archive entry
-            const archivedJob = {
-                id: jobRow.id,
-                cells: jobCells,
-                pressNumber: press.dataset.press,
-                section: pressContainer.classList.contains('completed') ? 'completed' : 'in-progress'
-            };
+        } else if (action === 'delete' || action === 'archive') { // Check for both delete and archive
+            if (confirm('Are you sure you want to archive this job?')) {
+                try {
+                    // Get all the job data before removing
+                    const cells = jobRow.getElementsByTagName('td');
+                    const jobData = {
+                        id: jobRow.id,
+                        pressNumber: currentPress,
+                        timestamp: new Date().toISOString(),
+                        data: Array.from(cells).map(cell => cell.textContent),
+                        section: isCompleted ? 'completed' : 'in-progress'
+                    };
 
-            // Add to archived jobs
-            const archivedJobs = JSON.parse(localStorage.getItem('archivedJobs') || '[]');
-            archivedJobs.push(archivedJob);
-            localStorage.setItem('archivedJobs', JSON.stringify(archivedJobs));
+                    console.log('Archiving job:', jobData); // Debug log
 
-            // Remove row
-            jobRow.remove();
+                    // Get existing archived jobs or initialize empty array
+                    const archivedJobs = JSON.parse(localStorage.getItem('archivedJobs') || '[]');
+                    
+                    // Add new job to archive
+                    archivedJobs.push(jobData);
+                    
+                    // Save updated archive
+                    localStorage.setItem('archivedJobs', JSON.stringify(archivedJobs));
 
-            // Check if we need to add "no jobs" row
-            const tbody = press.querySelector('tbody');
-            if (!tbody.querySelector('tr.job')) {
-                addNoJobsRow(tbody);
+                    // Remove the job row from the table
+                    const tbody = jobRow.closest('tbody');
+                    jobRow.remove();
+
+                    // Check if the tbody is empty and add "no jobs" row if needed
+                    if (!tbody.querySelector('tr.job')) {
+                        const noJobsRow = document.createElement('tr');
+                        noJobsRow.className = 'no-jobs';
+                        const td = document.createElement('td');
+                        td.colSpan = '11';
+                        td.textContent = 'No jobs assigned';
+                        noJobsRow.appendChild(td);
+                        tbody.appendChild(noJobsRow);
+                    }
+
+                    // Save the current state after deletion
+                    if (typeof saveCurrentState === 'function') {
+                        saveCurrentState();
+                    }
+
+                    console.log('Job archived successfully'); // Debug log
+                    alert('Job has been moved to archive');
+                } catch (error) {
+                    console.error('Error during delete:', error);
+                }
             }
-
-            // Save current state
-            saveCurrentState();
         }
 
         menu.style.display = 'none';
