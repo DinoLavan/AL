@@ -10,12 +10,13 @@ function loadArchivedJobs() {
     tbody.innerHTML = '';
     
     if (archivedJobs.length === 0) {
-        tbody.innerHTML = '<tr class="no-items"><td colspan="13">No archived items</td></tr>';
+        tbody.innerHTML = '<tr class="no-jobs"><td colspan="13">No archived items</td></tr>';
         return;
     }
     
     archivedJobs.forEach(job => {
         const row = document.createElement('tr');
+        row.className = 'job';
         
         // Add all job data cells
         job.cells.forEach(cellText => {
@@ -57,4 +58,6 @@ function restoreJob(job) {
     
     // Reload archive table
     loadArchivedJobs();
+    
+    alert('Job restored! Please refresh the schedule page to see the restored job.');
 } 

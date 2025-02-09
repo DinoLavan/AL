@@ -392,3 +392,23 @@ th {
 #contextMenu div[data-action="edit"] {
     color: #007bff;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.archive-link {
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.archive-link:hover {
+    background-color: #5a6268;
+}

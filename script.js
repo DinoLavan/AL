@@ -592,6 +592,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetPress.appendChild(jobElement);
                 initDragAndDrop();
             }
+        } else if (action === 'delete') {
+            // Get job data before removing
+            const pressContainer = jobElement.closest('.press-container');
+            const press = jobElement.closest('.press');
+            const jobCells = Array.from(jobElement.cells).map(cell => cell.textContent);
+            
+            // Create archive entry
+            const archivedJob = {
+                id: jobElement.id,
+                cells: jobCells,
+                pressNumber: press.dataset.press,
+                section: pressContainer.classList.contains('completed') ? 'completed' : 'in-progress'
+            };
+
+            // Add to archived jobs
+            const archivedJobs = JSON.parse(localStorage.getItem('archivedJobs') || '[]');
+            archivedJobs.push(archivedJob);
+            localStorage.setItem('archivedJobs', JSON.stringify(archivedJobs));
+
+            // Remove row
+            jobElement.remove();
+
+            // Check if we need to add "no jobs" row
+            const tbody = press.querySelector('tbody');
+            if (!tbody.querySelector('tr.job')) {
+                addNoJobsRow(tbody);
+            }
+
+            // Save current state
+            saveCurrentState();
         }
 
         menu.style.display = 'none';
