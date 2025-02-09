@@ -3,9 +3,7 @@ function insertSidebar() {
     
     const sidebarHTML = `
         <div class="sidebar">
-            <div class="logo">
-                <img src="logo.png" alt="Logo">
-            </div>
+           
             <div class="menu">
                 <a href="index.html" class="menu-item">Home</a>
                 <a href="Scheduling.html" class="menu-item">Schedule</a>
@@ -15,7 +13,7 @@ function insertSidebar() {
                   <a href="work-order.html" class="menu-item">Work Order</a>
                 <div class="user-section">
                     ${currentUser 
-                        ? `<span class="username">Logged in as: ${currentUser.username}</span>
+                        ? `<span class="username">Logged in as: <br>${currentUser.username}</span>
                            <a href="#" class="menu-item" id="logoutBtn">Logout</a>`
                         : `<a href="login.html" class="menu-item">Login</a>`
                     }
