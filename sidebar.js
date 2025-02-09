@@ -3,9 +3,7 @@ function insertSidebar() {
     
     const sidebarHTML = `
         <div class="sidebar">
-            <div class="logo">
-                <img src="logo.png" alt="Logo">
-            </div>
+           
             <div class="menu">
                 <a href="index.html" class="menu-item">Home</a>
                 <a href="Scheduling.html" class="menu-item">Schedule</a>
