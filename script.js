@@ -607,6 +607,117 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize drag and drop
     initDragAndDrop();
 
-    // Load saved data if exists
-    loadSavedData();
+    function addNoJobsRow(tbody) {
+        // Remove any existing "no jobs" rows first
+        const existingNoJobs = tbody.querySelectorAll('.no-jobs');
+        existingNoJobs.forEach(row => row.remove());
+        
+        // Add new "no jobs" row
+        const row = document.createElement('tr');
+        row.className = 'no-jobs';
+        const td = document.createElement('td');
+        td.colSpan = '11';
+        td.textContent = 'No jobs';
+        row.appendChild(td);
+        tbody.appendChild(row);
+    }
+
+    function ensureNoJobsRows() {
+        // Add "no jobs" row to empty presses
+        document.querySelectorAll('.press tbody').forEach(tbody => {
+            const hasJobs = tbody.querySelector('tr.job');
+            const hasNoJobsRow = tbody.querySelector('.no-jobs');
+            
+            if (!hasJobs && !hasNoJobsRow) {
+                addNoJobsRow(tbody);
+            } else if (hasJobs && hasNoJobsRow) {
+                hasNoJobsRow.remove();
+            }
+        });
+    }
+
+    function saveCurrentState() {
+        console.log('Saving state...');
+        const allJobs = [];
+        
+        document.querySelectorAll('tr.job').forEach(job => {
+            const pressContainer = job.closest('.press-container');
+            const press = job.closest('.press');
+            
+            if (pressContainer && press) {
+                const cells = Array.from(job.cells).map(cell => cell.textContent);
+                
+                allJobs.push({
+                    id: job.id,
+                    cells: cells,
+                    pressNumber: press.dataset.press,
+                    section: pressContainer.classList.contains('completed') ? 'completed' : 'in-progress'
+                });
+            }
+        });
+        
+        console.log('Saving jobs:', allJobs.length);
+        localStorage.setItem('savedJobs', JSON.stringify(allJobs));
+    }
+
+    function restoreSavedState() {
+        console.log('Loading saved state...');
+        
+        // Clear all existing rows
+        document.querySelectorAll('tr.job, tr.no-jobs').forEach(row => row.remove());
+        
+        const savedJobs = localStorage.getItem('savedJobs');
+        
+        if (savedJobs) {
+            const jobs = JSON.parse(savedJobs);
+            console.log('Found saved jobs:', jobs.length);
+            
+            jobs.forEach(job => {
+                const targetContainer = document.querySelector(
+                    `.press-container.${job.section} .press[data-press="${job.pressNumber}"] tbody`
+                );
+                
+                if (targetContainer) {
+                    // Create new table row
+                    const row = document.createElement('tr');
+                    row.id = job.id;
+                    row.className = 'job';
+                    row.draggable = true;
+                    
+                    // Add cells
+                    job.cells.forEach(cellText => {
+                        const td = document.createElement('td');
+                        td.textContent = cellText;
+                        row.appendChild(td);
+                    });
+                    
+                    // Add to target container
+                    targetContainer.appendChild(row);
+                }
+            });
+        }
+        
+        // Ensure "no jobs" rows are correct
+        ensureNoJobsRows();
+    }
+
+    // Save state after any changes
+    const observer = new MutationObserver(() => {
+        console.log('Change detected, saving state...');
+        saveCurrentState();
+        ensureNoJobsRows();
+    });
+
+    document.querySelectorAll('.press-container').forEach(container => {
+        observer.observe(container, {
+            childList: true,
+            subtree: true
+        });
+    });
+
+    // Initial load of saved state
+    restoreSavedState();
+    
+    // Initialize drag and drop after loading state
+    initDragAndDrop();
 });
