@@ -12,6 +12,7 @@ function insertSidebar() {
                 <a href="dies.html" class="menu-item">Dies</a>
                 <a href="ups-tracker.html" class="menu-item">UPS Tracker</a>
                 <a href="archive.html" class="menu-item">Archive</a>
+                  <a href="work-order.html" class="menu-item">Work Order</a>
                 <div class="user-section">
                     ${currentUser 
                         ? `<span class="username">Logged in as: ${currentUser.username}</span>
