@@ -1,49 +1,31 @@
-function insertSidebar() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
+// Function to create and insert the sidebar
+function createSidebar() {
     const sidebarHTML = `
         <div class="sidebar">
-            <div class="logo">
-                <img src="logo.png" alt="Logo">
-            </div>
-            <div class="menu">
-                <a href="index.html" class="menu-item">Home</a>
-                <a href="Scheduling.html" class="menu-item">Schedule</a>
-                <a href="dies.html" class="menu-item">Dies</a>
-                <a href="ups-tracker.html" class="menu-item">UPS Tracker</a>
-                <a href="archive.html" class="menu-item">Archive</a>
-                <div class="user-section">
-                    ${currentUser 
-                        ? `<span class="username">Logged in as: ${currentUser.username}</span>
-                           <a href="#" class="menu-item" id="logoutBtn">Logout</a>`
-                        : `<a href="login.html" class="menu-item">Login</a>`
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="main-content">
+           
+            <nav>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+                    <li><a href="work-order.html"><i class="fas fa-file-alt"></i>Work Order</a></li>
+                    <li><a href="#"><i class="fas fa-box"></i>Inventory</a></li>
+                    <li><a href="#"><i class="fas fa-chart-bar"></i>Reports</a></li>
+                </ul>
+            </nav>
         </div>
     `;
-
-    // Insert at the start of the body
-    document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
     
-    // Move all existing body content into main-content
-    const mainContent = document.querySelector('.main-content');
-    while (document.body.children.length > 2) {  // sidebar + main-content = 2
-        mainContent.appendChild(document.body.children[2]);
-    }
+    // Insert the sidebar at the start of the body
+    document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
 
-    // Add logout handler
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
-        });
-    }
+    // Set active class based on current page
+    const currentPage = window.location.pathname.split('/').pop();
+    const links = document.querySelectorAll('.sidebar nav a');
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
 }
 
-// Initialize sidebar when page loads
-document.addEventListener('DOMContentLoaded', insertSidebar); 
+// Create sidebar when the DOM is loaded
+document.addEventListener('DOMContentLoaded', createSidebar); 
