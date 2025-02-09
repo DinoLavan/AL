@@ -457,54 +457,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add context menu to both sections
     document.addEventListener('contextmenu', function(e) {
-        const jobElement = e.target.closest('.job');
-        if (!jobElement) return;
+        const jobRow = e.target.closest('tr.job');
+        if (!jobRow) return;
         
         e.preventDefault();
         
-        // Change menu option based on section
-        const completeOption = menu.querySelector('[data-action="complete"]');
-        if (completeOption) {
-            const isCompleted = jobElement.closest('.press-container').classList.contains('completed');
-            completeOption.textContent = isCompleted ? 'Move Back' : 'Complete';
-        }
+        // Store both the job ID and the exact row reference
+        const pressContainer = jobRow.closest('.press-container');
+        const press = jobRow.closest('.press');
         
-        // Position menu relative to viewport
-        const x = e.clientX;
-        const y = e.clientY;
-        
-        // Get viewport dimensions
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        
-        // Make menu visible but off-screen to measure its size
-        menu.style.display = 'block';
-        menu.style.left = '-9999px';
-        menu.style.top = '-9999px';
-        
-        // Get menu dimensions
-        const menuWidth = menu.offsetWidth;
-        const menuHeight = menu.offsetHeight;
-        
-        // Calculate final position
-        let finalX = x;
-        let finalY = y;
-        
-        // Adjust if menu would go off right edge
-        if (x + menuWidth > viewportWidth) {
-            finalX = viewportWidth - menuWidth;
-        }
-        
-        // Adjust if menu would go off bottom edge
-        if (y + menuHeight > viewportHeight) {
-            finalY = viewportHeight - menuHeight;
-        }
+        menu.dataset.currentJob = jobRow.id;
+        menu.dataset.currentPress = press.dataset.press;
+        menu.dataset.currentIndex = Array.from(press.querySelectorAll('tr.job')).indexOf(jobRow);
         
         // Position menu
-        menu.style.left = finalX + 'px';
-        menu.style.top = finalY + 'px';
-
-        menu.dataset.currentJob = jobElement.id;
+        const x = e.clientX;
+        const y = e.clientY;
+        menu.style.display = 'block';
+        menu.style.left = x + 'px';
+        menu.style.top = y + 'px';
     });
 
     // Handle menu item clicks
@@ -513,28 +484,41 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!item) return;
 
         const action = item.dataset.action;
-        const jobElement = document.getElementById(menu.dataset.currentJob);
-        if (!jobElement) return;
+        const currentJobId = menu.dataset.currentJob;
+        const currentPress = menu.dataset.currentPress;
+        const currentIndex = parseInt(menu.dataset.currentIndex);
+        
+        // Get the exact job row using both press number and index
+        const press = document.querySelector(`.press[data-press="${currentPress}"]`);
+        const jobRows = Array.from(press.querySelectorAll('tr.job'));
+        const jobRow = jobRows[currentIndex];
+        
+        if (!jobRow) {
+            console.error('Could not find job row');
+            return;
+        }
 
-        const pressNumber = jobElement.closest('.press').dataset.press;
-        const isCompleted = jobElement.closest('.press-container').classList.contains('completed');
-
-        if (action === 'complete') {
-            const targetPress = document.querySelector(`.press-container.${isCompleted ? 'in-progress' : 'completed'} .press[data-press="${pressNumber}"] tbody`);
-            
-            if (targetPress) {
-                const noJobsRow = targetPress.querySelector('.no-jobs');
-                if (noJobsRow) {
-                    noJobsRow.remove();
-                }
-                
-                targetPress.appendChild(jobElement);
-                initDragAndDrop();
+        if (action === 'edit') {
+            // Handle edit action
+            const pressContainer = jobRow.closest('.press');
+            if (pressContainer) {
+                // Your edit logic here
+                console.log('Editing job in press', pressContainer.dataset.press);
             }
+        } else if (action === 'complete') {
+            // Implement complete logic here
+            console.log('Complete functionality to be implemented');
         } else if (action === 'split') {
-            const quantityCell = jobElement.querySelector('td:nth-child(4)');
-            const valueCell = jobElement.querySelector('td:nth-child(7)');
+            const cells = jobRow.getElementsByTagName('td');
+            const quantityCell = cells[3];
+            const valueCell = cells[6];
             
+            if (!quantityCell || !valueCell) {
+                console.error('Could not find quantity or value cells');
+                return;
+            }
+
+            // Rest of your split logic remains the same
             const totalQuantity = parseInt(quantityCell.textContent.replace(/,/g, ''));
             const totalValue = parseFloat(valueCell.textContent.replace(/[^0-9.-]+/g, ''));
             
@@ -548,29 +532,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Calculate remaining values
             const remainingQuantity = totalQuantity - completedQuantity;
             const completedValue = (totalValue * completedQuantity) / totalQuantity;
             const remainingValue = totalValue - completedValue;
             
+            // Update original row
             quantityCell.textContent = remainingQuantity.toLocaleString();
             valueCell.textContent = remainingValue.toLocaleString('en-US', {
                 style: 'currency',
                 currency: 'USD'
             });
             
-            const completedJob = jobElement.cloneNode(true);
-            completedJob.id = jobElement.id + '-completed';
+            // Create completed job row
+            const completedJob = jobRow.cloneNode(true);
+            completedJob.id = jobRow.id + '-completed';
             
-            const completedQuantityCell = completedJob.querySelector('td:nth-child(4)');
-            const completedValueCell = completedJob.querySelector('td:nth-child(7)');
-            
-            completedQuantityCell.textContent = completedQuantity.toLocaleString();
-            completedValueCell.textContent = completedValue.toLocaleString('en-US', {
+            const completedCells = completedJob.getElementsByTagName('td');
+            completedCells[3].textContent = completedQuantity.toLocaleString();
+            completedCells[6].textContent = completedValue.toLocaleString('en-US', {
                 style: 'currency',
                 currency: 'USD'
             });
             
-            const targetPress = document.querySelector(`.press-container.completed .press[data-press="${pressNumber}"] tbody`);
+            // Move completed job to completed section
+            const targetPress = document.querySelector(`.press-container.completed .press[data-press="${currentPress}"] tbody`);
             if (targetPress) {
                 const noJobsRow = targetPress.querySelector('.no-jobs');
                 if (noJobsRow) {
@@ -579,28 +565,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetPress.appendChild(completedJob);
                 initDragAndDrop();
             }
-        } else if (action.startsWith('move-')) {
-            const targetPressNumber = action.split('-')[1];
-            const targetPress = document.querySelector(`.press-container.${isCompleted ? 'completed' : 'in-progress'} .press[data-press="${targetPressNumber}"] tbody`);
-            
-            if (targetPress) {
-                const noJobsRow = targetPress.querySelector('.no-jobs');
-                if (noJobsRow) {
-                    noJobsRow.remove();
-                }
-                
-                targetPress.appendChild(jobElement);
-                initDragAndDrop();
-            }
         } else if (action === 'delete') {
             // Get job data before removing
-            const pressContainer = jobElement.closest('.press-container');
-            const press = jobElement.closest('.press');
-            const jobCells = Array.from(jobElement.cells).map(cell => cell.textContent);
+            const pressContainer = jobRow.closest('.press-container');
+            const press = jobRow.closest('.press');
+            const jobCells = Array.from(jobRow.cells).map(cell => cell.textContent);
             
             // Create archive entry
             const archivedJob = {
-                id: jobElement.id,
+                id: jobRow.id,
                 cells: jobCells,
                 pressNumber: press.dataset.press,
                 section: pressContainer.classList.contains('completed') ? 'completed' : 'in-progress'
@@ -612,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('archivedJobs', JSON.stringify(archivedJobs));
 
             // Remove row
-            jobElement.remove();
+            jobRow.remove();
 
             // Check if we need to add "no jobs" row
             const tbody = press.querySelector('tbody');
