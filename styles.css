@@ -384,3 +384,11 @@ th {
     margin-top: 40px;
     opacity: 0.8;
 }
+
+#contextMenu div[data-action="delete"] {
+    color: #dc3545;
+}
+
+#contextMenu div[data-action="edit"] {
+    color: #007bff;
+}

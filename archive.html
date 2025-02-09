@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Archive - Press Schedule</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Archived Jobs</h1>
+        <button class="back-btn" onclick="window.location.href='Scheduling.html'">Back to Schedule</button>
+    </div>
+
+    <div class="press-container">
+        <div class="press">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Esko</th>
+                        <th>Setup</th>
+                        <th>Value</th>
+                        <th>Job ID</th>
+                        <th>SO Number</th>
+                        <th>Rep</th>
+                        <th>Consignee</th>
+                        <th>Original Press</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="archiveTableBody">
+                    <tr class="no-jobs">
+                        <td colspan="13">No archived items</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="archive.js"></script>
+</body>
+</html> 
